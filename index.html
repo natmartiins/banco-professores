@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Banco de Professores — Skills & GO</title>
+<title>Banco de Instrutores — Novos Negócios</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0a;
-    --surface: #111111;
-    --surface2: #1a1a1a;
-    --border: rgba(255,255,255,0.08);
-    --border-hover: rgba(255,255,255,0.18);
-    --accent: #F5C842;
+    --bg: #f3f5f8;
+    --surface: #ffffff;
+    --surface2: #eef1f6;
+    --border: rgba(16,24,40,0.10);
+    --border-hover: rgba(16,24,40,0.22);
+    --accent: #1868DB;   /* azul principal (ajuste aqui) */
     --accent2: #FF6B35;
-    --text: #f0f0f0;
-    --muted: #888;
-    --muted2: #555;
+    --text: #14213d;
+    --muted: #5f6b7c;
+    --muted2: #98a2b3;
     --ativo: #22c55e;
     --inativo: #6b7280;
     --prospecto: #f59e0b;
@@ -142,6 +142,19 @@
     flex-wrap: wrap;
     align-items: center;
   }
+  .search-wrap {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.4;
+    pointer-events: none;
+  }
   .toolbar input, .toolbar select {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -259,6 +272,17 @@
   .badge-rpa { background: rgba(20,184,166,0.12); color: #5eead4; border: 1px solid rgba(20,184,166,0.2); }
 
   /* ACTIONS COL */
+  .badge-sg { background: rgba(255,107,53,0.12); color: #ff9a73; border: 1px solid rgba(255,107,53,0.25); margin: 2px 2px 2px 0; }
+  .badge-imersao { background: rgba(244,114,182,0.12); color: #f9a8d4; border: 1px solid rgba(244,114,182,0.25); margin: 2px 2px 2px 0; }
+  .chip-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--muted);
+    border-radius: 20px; padding: 8px 16px; font-size: 13px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: all 0.15s; user-select: none;
+  }
+  .chip:hover { border-color: var(--border-hover); color: var(--text); }
+  .chip.on[data-val="Skills & Go"] { background: rgba(255,107,53,0.15); color: #ff9a73; border-color: rgba(255,107,53,0.4); }
+  .chip.on[data-val="Imersão"] { background: rgba(244,114,182,0.15); color: #f9a8d4; border-color: rgba(244,114,182,0.4); }
   .actions { display: flex; gap: 6px; }
 
   /* EMPTY */
@@ -500,137 +524,6 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
 
-  /* AUTOCOMPLETE DROPDOWN */
-  .autocomplete-wrap {
-    flex: 1;
-    min-width: 200px;
-    position: relative;
-  }
-  .autocomplete-wrap svg {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.4;
-    pointer-events: none;
-    z-index: 1;
-  }
-  .autocomplete-wrap input {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: var(--radius);
-    padding: 10px 38px 10px 38px;
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    transition: border-color 0.2s;
-    width: 100%;
-  }
-  .autocomplete-wrap input:focus { border-color: var(--accent); }
-  .autocomplete-arrow {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    opacity: 0.4;
-    font-size: 10px;
-    color: var(--muted);
-  }
-  .autocomplete-dropdown {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    background: var(--surface2);
-    border: 1px solid var(--border-hover);
-    border-radius: var(--radius);
-    z-index: 100;
-    max-height: 260px;
-    overflow-y: auto;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    display: none;
-  }
-  .autocomplete-dropdown.open { display: block; }
-  .autocomplete-group-label {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--muted2);
-    padding: 8px 14px 4px;
-  }
-  .autocomplete-item {
-    padding: 9px 14px;
-    font-size: 13px;
-    cursor: pointer;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background 0.1s;
-  }
-  .autocomplete-item:hover,
-  .autocomplete-item.focused { background: rgba(245,200,66,0.08); color: var(--accent); }
-  .autocomplete-item .item-tag {
-    font-size: 10px;
-    background: rgba(245,200,66,0.1);
-    color: var(--accent);
-    border: 1px solid rgba(245,200,66,0.2);
-    border-radius: 20px;
-    padding: 1px 7px;
-    flex-shrink: 0;
-  }
-  .autocomplete-empty {
-    padding: 16px 14px;
-    font-size: 13px;
-    color: var(--muted);
-    text-align: center;
-  }
-
-  /* PHOTO UPLOAD */
-  .photo-upload-area {
-    border: 2px dashed var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    background: var(--surface2);
-  }
-  .photo-upload-area:hover { border-color: var(--accent); background: rgba(245,200,66,0.04); }
-  .photo-upload-area.has-photo { border-style: solid; border-color: rgba(245,200,66,0.3); }
-  .photo-preview {
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-    margin: 0 auto 10px;
-    border: 2px solid var(--border-hover);
-  }
-  .photo-upload-icon { font-size: 28px; margin-bottom: 6px; opacity: 0.5; }
-  .photo-upload-label { font-size: 13px; color: var(--muted); }
-  .photo-upload-label strong { color: var(--accent); }
-  .photo-upload-hint { font-size: 11px; color: var(--muted2); margin-top: 4px; }
-  #f-foto { display: none; }
-  .photo-remove-btn {
-    position: absolute; top: 8px; right: 8px;
-    background: rgba(239,68,68,0.15); border: none; border-radius: 50%;
-    color: #ef4444; cursor: pointer; width: 22px; height: 22px;
-    font-size: 12px; display: none; align-items: center; justify-content: center;
-  }
-  .photo-upload-area.has-photo .photo-remove-btn { display: flex; }
-  .photo-upload-progress {
-    font-size: 12px; color: var(--accent); margin-top: 6px; display: none;
-  }
-  .drawer-avatar img {
-    width: 56px; height: 56px;
-    border-radius: 50%; object-fit: cover;
-    border: 2px solid var(--border-hover);
-  }
-
   @media (max-width: 768px) {
     .stats { grid-template-columns: repeat(2, 1fr); }
     .drawer { width: 100%; right: -100%; }
@@ -638,21 +531,131 @@
     main { padding: 1.5rem 1rem; }
     .hero-strip h1 { font-size: 24px; }
   }
+
+  /* ===== PALETA SÓBRIA ===== */
+  .n-ativo, .n-prospecto, .n-inativo { color: var(--text); }
+  .badge-area { background: rgba(255,255,255,0.05); color: #cfcfcf; border: 1px solid var(--border); }
+  .badge-pj, .badge-rpa { background: rgba(255,255,255,0.05); color: #cfcfcf; border: 1px solid var(--border); }
+  .badge-ativo { background: rgba(34,197,94,0.08); color: #86d6a4; border: 1px solid rgba(34,197,94,0.18); }
+  .badge-prospecto { background: rgba(245,200,66,0.08); color: #d9bf72; border: 1px solid rgba(245,200,66,0.18); }
+  .badge-inativo { background: rgba(255,255,255,0.04); color: #8a8a8a; border: 1px solid var(--border); }
+  .badge-sg { background: rgba(245,200,66,0.10); color: var(--accent); border: 1px solid rgba(245,200,66,0.25); }
+  .badge-imersao { background: rgba(255,255,255,0.08); color: #e6e6e6; border: 1px solid rgba(255,255,255,0.18); }
+  .chip.on[data-val="Skills & Go"] { background: rgba(245,200,66,0.12); color: var(--accent); border-color: rgba(245,200,66,0.4); }
+  .chip.on[data-val="Imersão"] { background: rgba(255,255,255,0.10); color: #f0f0f0; border-color: rgba(255,255,255,0.3); }
+  .prod-line { margin: 2px 0 6px; }
+  .prod-line .cursos { display: block; font-size: 11px; color: var(--muted); margin: 0 0 4px 2px; line-height: 1.4; }
+  .curso-field { display: none; }
+  .curso-field.show { display: flex; }
+
+  /* ===== TEMA CLARO (fundo branco/cinza + azul) ===== */
+  header { box-shadow: 0 1px 2px rgba(16,24,40,0.04); }
+  .logo-text { color: #0b2545; }
+  .header-tag { background: rgba(24,104,219,0.08); color: var(--accent); border: 1px solid rgba(24,104,219,0.2); }
+  .hero-strip h1 { color: #0b2545; }
+  .btn.primary { color: #fff; }
+  .btn.primary:hover { background: #1559bd; }
+  .page-btn.active { color: #fff; }
+  select option { background: #fff; color: var(--text); }
+  .overlay { background: rgba(16,24,40,0.45); }
+  .drawer-overlay { background: rgba(16,24,40,0.35); }
+  .modal, .drawer { box-shadow: 0 12px 40px rgba(16,24,40,0.18); }
+  .form-section, .modal-header { border-bottom-color: rgba(24,104,219,0.15); }
+  .badge-area, .badge-pj, .badge-rpa { background: var(--surface2); color: #344054; border: 1px solid var(--border); }
+  .badge-sg { background: rgba(24,104,219,0.10); color: #1559bd; border: 1px solid rgba(24,104,219,0.25); }
+  .badge-imersao { background: #e9edf3; color: #344054; border: 1px solid rgba(16,24,40,0.16); }
+  .badge-ativo { background: rgba(22,163,74,0.10); color: #15803d; border: 1px solid rgba(22,163,74,0.25); }
+  .badge-prospecto { background: rgba(217,119,6,0.10); color: #b45309; border: 1px solid rgba(217,119,6,0.25); }
+  .badge-inativo { background: var(--surface2); color: #667085; border: 1px solid var(--border); }
+  .chip.on[data-val="Skills & Go"] { background: rgba(24,104,219,0.10); color: #1559bd; border-color: rgba(24,104,219,0.45); }
+  .chip.on[data-val="Imersão"] { background: #e3e8f0; color: #14213d; border-color: rgba(16,24,40,0.35); }
+  .btn.danger { color: #d92d20; border-color: rgba(217,45,32,0.3); }
+  .btn.danger:hover { background: rgba(217,45,32,0.06); }
+
+  /* ===== LOGO ALURA + SELETOR DE TEMA ===== */
+  :root {
+    --logo-color: #0b2545;
+    --av1-bg:#e3edfc; --av1-fg:#1868DB; --av2-bg:#e9edf3; --av2-fg:#475467; --av3-bg:#dde7f7; --av3-fg:#14213d;
+  }
+  .alura-logo {
+    display: inline-block; width: 70px; height: 24px;
+    background-color: var(--logo-color);
+    -webkit-mask: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAAAwCAYAAADDyJIwAAAFfElEQVR42u2dXWwVRRTHf71eoAZQmyu0DxAjtQEbFYEGKVBMNGriR4woovigxg+iUaIx+qY8aIwxkKAPaiLGz1Qx8UVj1AhBWtryUaMgsRpQhETT1ocatElL4daHmSbL3Onu3J3Z23v3zj/ZpPfsfOzM/nfOmXPObmvGx8fx8DBFxk+BhyeMhyeMR3oI0wxsAU4CQ/I4CmwG5ju6zkcCbU8cD/jbV1mEuRL4EugCHgJmB85dDDwFHAY+AOb5qa5uwlwLdAArDcreJssu8NNdnYSZCbxTZJ06YLuf7spHNkadh4GcRv4h8Jf8uwlYq5xfAlwP7PLTXl2EuUMjew54W5H1A48rsg2eMNWlkmYCixXZMPCepuxrgOpGvtFPeXURpk0j2w2MaeSDwBFFNgu43E979RCmVSPrCSnfY9iGR0oJo9tGd4eU7zZswyOFhJkBXK2xXw6H1OnQyFb7aa+OXdJyTfn9QD6kzhDwG9AYkNUDlwAnEhzXduBORbYK+Nmy3e851wE5CjQU2UYOuAlYgQirzAPmaB7eIcKdna8AGy3G8q/cyf4O7AP2AD+4JExrkeooWKZR09aJKns4G4AXJJGnG5SvsTwfhdnyaJIERm5SXga+cqGSVhZp8HrD91x3Qi9wryFZpgpXAO3Am5Nxw5QwGeAaRXYGOOAJE4km4H2ED6tScA8i2yC2SloC1CqyXkmaKPwBDEjbJTiJdVJPpx1vaOYuD3wHHAypNxLR7reO5q8OuBu4SJFvAnaodp8pYYr1v6joojC2tBr4IuVkaQNaFFm/vEE/Wba9Ux4usBl4HVinyJ8FHoyjkuIavGFlq0EtrdPINjkgi2uMAE/IHVMQt8S1YVo1S2qPJ0wkrlN+j1K+wdfTwNeKbFocwiySei6IIwinnSn6NOWvQsSW0ox65fdxwv1WU4m5GPiUTAhja79MoFPT9/IUk+V8jY04XGbXOB24HfhUGrdrXRCm2PiRV0sCtRrZaJlc22LgVeAXRGrKDcB5JhVNdkltBquFCbwDz947a4McsB64DxGSiIUowszX6OFjMff/P0prPPjkLZPXcAaPJJBFuP03yFVkmm2DUSopbjhAB51nuBZY6u+rczQjYkJ9wEfAzYZk+duWMLb+F5O6Pj/GDeqARxEe5C7gMcT7YVEYRHij24BnbFWSyxUmzI7Z5u93bMwCnkYk3Nca1hlFRKQ/RviFzkr5AhvC1CFiPkEMYJeWsF+qpqxCykwZ+yfKfSe2E1hoWP6gJMlnwCnXRu8qjWyv5QBHpfHbojwhzRQmjHtE4y0DsvyJCCK2I5LZwpC3IYxr+yXYRoumL5eEySe0pS2nVXAFwummwzDwOfCJdIGYfjUqY1PAtf0SZce4xH8amYt8lHL6PMqTGtk+RBDxMmnTdBRBFqsVZgYi1qOyts/BQDtLsFP6RyO70EG75fR9NzWZ/jhwa8CATQSZEPtFPdfhqM9hCpOx64FLHY7rV42sJUWEyQEXKLJjSZMljDCuAo5TpZZ07W+k+Az/csUpDXlzpei4GMJ0O+w36UDkSUQKqaqS9kgdvwbxqku2QgkzRmGy01LgfsycdZNhURwbJouI8QQxAhxyOOCuEhi+W+QuIYi5wIspWWXagecV2TYSdoLqVphlFHoMJxxurjCASA4PopHCRC0bfANsJb14V85jkhg0IUzS6iiszTWO+3hJHmnEEOLjTmMJtZ9HfKcwkjBJ+V9KbfhOYCtw1yRqsNKxV+5oexMg43o0b0DqbJizmsk9kMBgOzX9hGV97bDoa5c8GhAfdGxG5PrMwc4DfDrCMFXHl0T44ygi16UJkUlXj3kQUnUZ9Mvt+SEmyQ6s8f9rwMPFttrDwxPGwxPGo8T4H1Y7DS4qaoYAAAAAAElFTkSuQmCC) no-repeat center / contain;
+            mask: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAAAwCAYAAADDyJIwAAAFfElEQVR42u2dXWwVRRTHf71eoAZQmyu0DxAjtQEbFYEGKVBMNGriR4woovigxg+iUaIx+qY8aIwxkKAPaiLGz1Qx8UVj1AhBWtryUaMgsRpQhETT1ocatElL4daHmSbL3Onu3J3Z23v3zj/ZpPfsfOzM/nfOmXPObmvGx8fx8DBFxk+BhyeMhyeMR3oI0wxsAU4CQ/I4CmwG5ju6zkcCbU8cD/jbV1mEuRL4EugCHgJmB85dDDwFHAY+AOb5qa5uwlwLdAArDcreJssu8NNdnYSZCbxTZJ06YLuf7spHNkadh4GcRv4h8Jf8uwlYq5xfAlwP7PLTXl2EuUMjew54W5H1A48rsg2eMNWlkmYCixXZMPCepuxrgOpGvtFPeXURpk0j2w2MaeSDwBFFNgu43E979RCmVSPrCSnfY9iGR0oJo9tGd4eU7zZswyOFhJkBXK2xXw6H1OnQyFb7aa+OXdJyTfn9QD6kzhDwG9AYkNUDlwAnEhzXduBORbYK+Nmy3e851wE5CjQU2UYOuAlYgQirzAPmaB7eIcKdna8AGy3G8q/cyf4O7AP2AD+4JExrkeooWKZR09aJKns4G4AXJJGnG5SvsTwfhdnyaJIERm5SXga+cqGSVhZp8HrD91x3Qi9wryFZpgpXAO3Am5Nxw5QwGeAaRXYGOOAJE4km4H2ED6tScA8i2yC2SloC1CqyXkmaKPwBDEjbJTiJdVJPpx1vaOYuD3wHHAypNxLR7reO5q8OuBu4SJFvAnaodp8pYYr1v6joojC2tBr4IuVkaQNaFFm/vEE/Wba9Ux4usBl4HVinyJ8FHoyjkuIavGFlq0EtrdPINjkgi2uMAE/IHVMQt8S1YVo1S2qPJ0wkrlN+j1K+wdfTwNeKbFocwiySei6IIwinnSn6NOWvQsSW0ox65fdxwv1WU4m5GPiUTAhja79MoFPT9/IUk+V8jY04XGbXOB24HfhUGrdrXRCm2PiRV0sCtRrZaJlc22LgVeAXRGrKDcB5JhVNdkltBquFCbwDz947a4McsB64DxGSiIUowszX6OFjMff/P0prPPjkLZPXcAaPJJBFuP03yFVkmm2DUSopbjhAB51nuBZY6u+rczQjYkJ9wEfAzYZk+duWMLb+F5O6Pj/GDeqARxEe5C7gMcT7YVEYRHij24BnbFWSyxUmzI7Z5u93bMwCnkYk3Nca1hlFRKQ/RviFzkr5AhvC1CFiPkEMYJeWsF+qpqxCykwZ+yfKfSe2E1hoWP6gJMlnwCnXRu8qjWyv5QBHpfHbojwhzRQmjHtE4y0DsvyJCCK2I5LZwpC3IYxr+yXYRoumL5eEySe0pS2nVXAFwummwzDwOfCJdIGYfjUqY1PAtf0SZce4xH8amYt8lHL6PMqTGtk+RBDxMmnTdBRBFqsVZgYi1qOyts/BQDtLsFP6RyO70EG75fR9NzWZ/jhwa8CATQSZEPtFPdfhqM9hCpOx64FLHY7rV42sJUWEyQEXKLJjSZMljDCuAo5TpZZ07W+k+Az/csUpDXlzpei4GMJ0O+w36UDkSUQKqaqS9kgdvwbxqku2QgkzRmGy01LgfsycdZNhURwbJouI8QQxAhxyOOCuEhi+W+QuIYi5wIspWWXagecV2TYSdoLqVphlFHoMJxxurjCASA4PopHCRC0bfANsJb14V85jkhg0IUzS6iiszTWO+3hJHmnEEOLjTmMJtZ9HfKcwkjBJ+V9KbfhOYCtw1yRqsNKxV+5oexMg43o0b0DqbJizmsk9kMBgOzX9hGV97bDoa5c8GhAfdGxG5PrMwc4DfDrCMFXHl0T44ygi16UJkUlXj3kQUnUZ9Mvt+SEmyQ6s8f9rwMPFttrDwxPGwxPGo8T4H1Y7DS4qaoYAAAAAAElFTkSuQmCC) no-repeat center / contain;
+  }
+  .logo-sep { width: 1px; height: 22px; background: var(--border-hover); }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .theme-switch { display: inline-flex; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: var(--surface2); }
+  .theme-switch button {
+    background: transparent; border: none; color: var(--muted); cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 6px 12px; transition: all 0.15s;
+  }
+  .theme-switch button:hover { color: var(--text); }
+  html[data-theme="light"] .theme-switch button[data-t="light"],
+  html[data-theme="dark"] .theme-switch button[data-t="dark"] { background: var(--accent); color: #fff; }
+  @media (max-width: 768px) { .header-tag { display: none; } .alura-logo { width: 56px; } }
+
+  /* ===== TEMA NOITE (fundo preto + azul) ===== */
+  html[data-theme="dark"] {
+    --bg: #000000; --surface: #0e0e0f; --surface2: #18181a;
+    --border: rgba(255,255,255,0.10); --border-hover: rgba(255,255,255,0.22);
+    --text: #f2f4f7; --muted: #9aa3b2; --muted2: #5b6472;
+    --accent: #3d8bfd; --logo-color: #ffffff;
+    --av1-bg:#16243a; --av1-fg:#7db4ff; --av2-bg:#1f1f22; --av2-fg:#c4cad4; --av3-bg:#1a2233; --av3-fg:#a9c4ee;
+  }
+  html[data-theme="dark"] header { box-shadow: none; }
+  html[data-theme="dark"] .logo-text, html[data-theme="dark"] .hero-strip h1 { color: #ffffff; }
+  html[data-theme="dark"] .header-tag { background: rgba(61,139,253,0.12); color: #7db4ff; border-color: rgba(61,139,253,0.3); }
+  html[data-theme="dark"] .btn.primary:hover { background: #2f7ae5; }
+  html[data-theme="dark"] select option { background: #18181a; color: #f2f4f7; }
+  html[data-theme="dark"] .overlay { background: rgba(0,0,0,0.75); }
+  html[data-theme="dark"] .drawer-overlay { background: rgba(0,0,0,0.6); }
+  html[data-theme="dark"] .modal, html[data-theme="dark"] .drawer { box-shadow: none; }
+  html[data-theme="dark"] .form-section, html[data-theme="dark"] .modal-header { border-bottom-color: rgba(61,139,253,0.2); }
+  html[data-theme="dark"] .badge-area, html[data-theme="dark"] .badge-pj, html[data-theme="dark"] .badge-rpa { background: rgba(255,255,255,0.06); color: #cfd6e0; border: 1px solid var(--border); }
+  html[data-theme="dark"] .badge-sg { background: rgba(61,139,253,0.15); color: #7db4ff; border: 1px solid rgba(61,139,253,0.35); }
+  html[data-theme="dark"] .badge-imersao { background: rgba(255,255,255,0.10); color: #e6e9ef; border: 1px solid rgba(255,255,255,0.2); }
+  html[data-theme="dark"] .badge-ativo { background: rgba(34,197,94,0.10); color: #86d6a4; border: 1px solid rgba(34,197,94,0.22); }
+  html[data-theme="dark"] .badge-prospecto { background: rgba(245,158,11,0.10); color: #e0b25a; border: 1px solid rgba(245,158,11,0.22); }
+  html[data-theme="dark"] .badge-inativo { background: rgba(255,255,255,0.05); color: #8a8f99; border: 1px solid var(--border); }
+  html[data-theme="dark"] .chip.on[data-val="Skills & Go"] { background: rgba(61,139,253,0.15); color: #7db4ff; border-color: rgba(61,139,253,0.5); }
+  html[data-theme="dark"] .chip.on[data-val="Imersão"] { background: rgba(255,255,255,0.12); color: #f2f4f7; border-color: rgba(255,255,255,0.35); }
+  html[data-theme="dark"] .btn.danger { color: #f26d63; border-color: rgba(242,109,99,0.35); }
+  html[data-theme="dark"] .btn.danger:hover { background: rgba(242,109,99,0.08); }
 </style>
+<script>
+(function(){
+  var t='light';
+  try{ t=localStorage.getItem('tema')||'light'; }catch(e){}
+  document.documentElement.setAttribute('data-theme',t);
+  window.setTheme=function(t){
+    document.documentElement.setAttribute('data-theme',t);
+    try{ localStorage.setItem('tema',t); }catch(e){}
+  };
+})();
+</script>
 </head>
 <body>
 
 <header>
   <div class="logo">
-    <div class="logo-text">Skills & <span>GO</span></div>
+    <span class="alura-logo" role="img" aria-label="Alura"></span>
+    <span class="logo-sep"></span>
+    <div class="logo-text">Novos <span>Negócios</span></div>
   </div>
-  <div class="header-tag">Banco de Professores</div>
+  <div class="header-right">
+    <div class="header-tag">Banco de Instrutores</div>
+    <div class="theme-switch" role="group" aria-label="Tema">
+      <button type="button" data-t="light" onclick="setTheme('light')">☀ Dia</button>
+      <button type="button" data-t="dark" onclick="setTheme('dark')">☾ Noite</button>
+    </div>
+  </div>
 </header>
 
 <main>
   <div class="hero-strip">
-    <h1>Professores <em>&</em> Especialistas</h1>
-    <p>Gerencie o time de professores do Skills & GO em um só lugar.</p>
+    <h1>Instrutores <em>&</em> Especialistas</h1>
+    <p>Gerencie os instrutores de Skills & Go e Imersões em um só lugar.</p>
   </div>
 
   <div class="stats" id="stats"></div>
@@ -662,12 +665,16 @@
   </div>
 
   <div class="toolbar">
-    <div class="autocomplete-wrap" id="acWrap">
+    <div class="search-wrap">
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" id="search" placeholder="Buscar por nome, área, e-mail..." autocomplete="off">
-      <span class="autocomplete-arrow">▼</span>
-      <div class="autocomplete-dropdown" id="acDropdown"></div>
+      <input type="text" id="search" placeholder="Buscar por nome, e-mail, área, curso...">
     </div>
+    <select id="fProduto">
+      <option value="">Todos os produtos</option>
+      <option value="Skills & Go">Skills & Go</option>
+      <option value="Imersão">Imersão</option>
+      <option value="__none">Sem produto definido</option>
+    </select>
     <select id="fStatus">
       <option value="">Todos os status</option>
       <option>Ativo</option>
@@ -679,7 +686,7 @@
       <option>PJ</option>
       <option>RPA</option>
     </select>
-    <button class="btn primary" onclick="openModal()">+ Novo professor</button>
+    <button class="btn primary" onclick="openModal()">+ Novo instrutor</button>
   </div>
 
   <div class="table-wrap">
@@ -687,6 +694,7 @@
       <thead>
         <tr>
           <th onclick="sortBy('nome')">Professor <span class="sort-arrow" id="s-nome"></span></th>
+          <th onclick="sortBy('produtos')">Produto <span class="sort-arrow" id="s-produtos"></span></th>
           <th onclick="sortBy('areas')">Áreas</th>
           <th onclick="sortBy('nivel')">Nível</th>
           <th onclick="sortBy('contrato')">Contrato</th>
@@ -705,7 +713,7 @@
 <div class="overlay" id="overlay">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="modal-title">Novo <span>professor</span></h2>
+      <h2 id="modal-title">Novo <span>instrutor</span></h2>
       <button class="close-btn" onclick="closeModal()">✕</button>
     </div>
 
@@ -718,6 +726,21 @@
       <div class="form-row"><label>LinkedIn</label><input id="f-linkedin" type="text" placeholder="linkedin.com/in/..."></div>
     </div>
 
+    <div class="form-section">Produto</div>
+    <div class="form-grid full">
+      <div class="form-row"><label>Já ministrou / ministra em</label>
+        <div class="chip-group" id="f-produtos">
+          <div class="chip" data-val="Skills & Go" onclick="toggleProd(this)">Skills & Go</div>
+          <div class="chip" data-val="Imersão" onclick="toggleProd(this)">Imersão</div>
+        </div>
+      </div>
+      <div class="form-row curso-field" id="row-cursosSG"><label>Cursos de Skills & Go que ministrou</label>
+        <input id="f-cursosSG" type="text" placeholder="Ex: Agentic Engineering, Building AI Products (separe por vírgula)">
+      </div>
+      <div class="form-row curso-field" id="row-cursosImersao"><label>Imersões que ministrou</label>
+        <input id="f-cursosImersao" type="text" placeholder="Ex: Imersão IA, Imersão Dados (separe por vírgula)">
+      </div>
+    </div>
     <div class="form-section">Perfil profissional</div>
     <div class="form-grid">
       <div class="form-row span2"><label>Profissão / Cargo atual</label><input id="f-prof" type="text" placeholder="Ex: Engenheiro de ML Sênior"></div>
@@ -766,23 +789,6 @@
       </div>
     </div>
 
-    <div class="form-section">Foto</div>
-    <div class="form-grid full">
-      <div class="form-row">
-        <label>Foto do professor</label>
-        <div class="photo-upload-area" id="photoUploadArea" onclick="document.getElementById('f-foto').click()">
-          <button class="photo-remove-btn" id="photoRemoveBtn" onclick="event.stopPropagation();removePhoto()">✕</button>
-          <div id="photoPreviewWrap">
-            <div class="photo-upload-icon">📷</div>
-            <div class="photo-upload-label"><strong>Clique para escolher</strong> uma foto</div>
-            <div class="photo-upload-hint">JPG, PNG ou WEBP · máx. 5 MB</div>
-          </div>
-          <div class="photo-upload-progress" id="photoProgress">Enviando foto...</div>
-        </div>
-        <input type="file" id="f-foto" accept="image/jpeg,image/png,image/webp">
-      </div>
-    </div>
-
     <div class="form-section">Observações</div>
     <div class="form-grid full">
       <div class="form-row"><label>Notas internas</label><textarea id="f-obs" placeholder="Histórico, contexto, referências..."></textarea></div>
@@ -790,7 +796,7 @@
 
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn primary" onclick="salvar()">Salvar professor</button>
+      <button class="btn primary" onclick="salvar()">Salvar instrutor</button>
     </div>
   </div>
 </div>
@@ -805,7 +811,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyAD45Pvl9t1LeSKBj__0LYJv44uvD7Ho9Q",
   authDomain: "skillsgo-professores.firebaseapp.com",
@@ -819,12 +824,8 @@ const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 const col = collection(db, 'professores');
 
-let fotoFile = null;
-let fotoUrlAtual = null;
-
 const COLORS = [
-  ['#1a1a2e','#a78bfa'],['#1a2e1a','#4ade80'],['#2e1a1a','#f87171'],
-  ['#2e2a1a','#fbbf24'],['#1a2a2e','#38bdf8'],['#2e1a2e','#e879f9'],
+  ['var(--av1-bg)','var(--av1-fg)'],['var(--av2-bg)','var(--av2-fg)'],['var(--av3-bg)','var(--av3-fg)'],
 ];
 function initials(n){return (n||'?').split(' ').filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')}
 function colorFor(n){const i=(n||'').charCodeAt(0)%COLORS.length;return COLORS[i]}
@@ -835,6 +836,21 @@ let sortCol = 'nome';
 let sortAsc = true;
 let page = 1;
 const PER_PAGE = 12;
+const PRODUTOS = ['Skills & Go','Imersão'];
+const prodList = p => (p.produtos||'').split(',').map(x=>x.trim()).filter(Boolean);
+const prodClass = v => v==='Skills & Go'?'sg':'imersao';
+const cursoKey = v => v==='Skills & Go'?'cursosSG':'cursosImersao';
+const cursosOf = (p,v) => (p[cursoKey(v)]||'').split(',').map(x=>x.trim()).filter(Boolean);
+const prodBadges = (p,size='') => prodList(p).map(v=>{
+  const c=cursosOf(p,v).join(' · ');
+  return `<div class="prod-line"><span class="badge badge-${prodClass(v)}"${size?` style="font-size:${size}"`:''}>${v}</span>${c?`<span class="cursos">${c}</span>`:''}</div>`;
+}).join('');
+window.toggleProd = function(el){ el.classList.toggle('on'); syncCursoFields(); };
+function syncCursoFields(){
+  const on=[...document.querySelectorAll('#f-produtos .chip.on')].map(c=>c.dataset.val);
+  document.getElementById('row-cursosSG').classList.toggle('show',on.includes('Skills & Go'));
+  document.getElementById('row-cursosImersao').classList.toggle('show',on.includes('Imersão'));
+}
 
 // ── loading overlay ──────────────────────────────────────────────
 const loadEl = document.getElementById('loading');
@@ -861,15 +877,18 @@ function renderStats(){
 
 // ── filtro + ordenação ───────────────────────────────────────────
 function filtered(){
-  const q=norm(document.getElementById('search').value||'');
+  const q=(document.getElementById('search').value||'').toLowerCase();
   const fs=document.getElementById('fStatus').value;
   const fc=document.getElementById('fContrato').value;
+  const fp=document.getElementById('fProduto').value;
   return lista.filter(p=>{
-    const m=!q||norm(p.nome).includes(q)||norm(p.email1).includes(q)||norm(p.email2).includes(q)||norm(p.areas).includes(q)||norm(p.prof).includes(q);
-    return m&&(!fs||p.status===fs)&&(!fc||p.contrato===fc);
+    const m=!q||(p.nome||'').toLowerCase().includes(q)||(p.email1||'').toLowerCase().includes(q)||(p.email2||'').toLowerCase().includes(q)||(p.areas||'').toLowerCase().includes(q)||(p.prof||'').toLowerCase().includes(q)||(p.cursosSG||'').toLowerCase().includes(q)||(p.cursosImersao||'').toLowerCase().includes(q);
+    const pl=prodList(p);
+    const okP=!fp||(fp==='__none'?pl.length===0:pl.includes(fp));
+    return m&&okP&&(!fs||p.status===fs)&&(!fc||p.contrato===fc);
   }).sort((a,b)=>{
-    const av=norm(a[sortCol]);
-    const bv=norm(b[sortCol]);
+    const av=(a[sortCol]||'').toLowerCase();
+    const bv=(b[sortCol]||'').toLowerCase();
     return sortAsc?(av>bv?1:-1):(av<bv?1:-1);
   });
 }
@@ -883,14 +902,14 @@ function render(){
   if(page>pages)page=1;
   const slice=list.slice((page-1)*PER_PAGE,page*PER_PAGE);
 
-  ['nome','areas','nivel','contrato','disp','status'].forEach(k=>{
+  ['nome','produtos','areas','nivel','contrato','disp','status'].forEach(k=>{
     const el=document.getElementById('s-'+k);
     if(el)el.textContent=sortCol===k?(sortAsc?'↑':'↓'):'';
   });
 
   const tbody=document.getElementById('tbody');
   if(!slice.length){
-    tbody.innerHTML=`<tr><td colspan="7"><div class="empty"><div class="empty-icon">◎</div><h3>Nenhum professor encontrado</h3><p>Adicione professores ou ajuste os filtros.</p></div></td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="8"><div class="empty"><div class="empty-icon">◎</div><h3>Nenhum instrutor encontrado</h3><p>Adicione instrutores ou ajuste os filtros.</p></div></td></tr>`;
   } else {
     tbody.innerHTML=slice.map(p=>{
       const id=p._id;
@@ -904,6 +923,7 @@ function render(){
           <div class="avatar" style="background:${bg};color:${fg}">${ini}</div>
           <div><div class="name-main">${p.nome||'—'}</div><div class="name-sub">${p.email1||p.email2||''}</div></div>
         </div></td>
+        <td>${prodBadges(p)||'<span style="color:var(--muted2)">—</span>'}</td>
         <td>${areas||'<span style="color:var(--muted2)">—</span>'}</td>
         <td><span style="font-size:12px;color:var(--muted)">${p.nivel||'—'}</span></td>
         <td>${cc?`<span class="badge badge-${cc}">${p.contrato}</span>`:'<span style="color:var(--muted2)">—</span>'}</td>
@@ -931,71 +951,18 @@ function render(){
 window.goPage  = n=>{page=n;render();};
 window.sortBy  = col=>{if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=true;}render();};
 
-// ── foto helpers ─────────────────────────────────────────────────
-function setPhotoPreview(url){
-  const area = document.getElementById('photoUploadArea');
-  const wrap = document.getElementById('photoPreviewWrap');
-  area.classList.add('has-photo');
-  wrap.innerHTML = `<img class="photo-preview" src="${url}" alt="Foto">`;
-}
-function clearPhotoPreview(){
-  const area = document.getElementById('photoUploadArea');
-  const wrap = document.getElementById('photoPreviewWrap');
-  area.classList.remove('has-photo');
-  wrap.innerHTML = `<div class="photo-upload-icon">📷</div><div class="photo-upload-label"><strong>Clique para escolher</strong> uma foto</div><div class="photo-upload-hint">JPG, PNG ou WEBP · máx. 5 MB</div>`;
-}
-window.removePhoto = function(){
-  fotoFile = null; fotoUrlAtual = null;
-  document.getElementById('f-foto').value = '';
-  clearPhotoPreview();
-};
-document.addEventListener('change', e=>{
-  if(e.target.id !== 'f-foto') return;
-  const file = e.target.files[0];
-  if(!file) return;
-  if(file.size > 5*1024*1024){ alert('Foto muito grande. Máximo 5 MB.'); return; }
-  fotoFile = file;
-  const reader = new FileReader();
-  reader.onload = ev => setPhotoPreview(ev.target.result);
-  reader.readAsDataURL(file);
-});
-
-async function fotoParaBase64(file){
-  return new Promise((resolve)=>{
-    const img = new Image();
-    const reader = new FileReader();
-    reader.onload = ev => {
-      img.onload = () => {
-        const MAX = 300;
-        let w = img.width, h = img.height;
-        if(w > h){ if(w>MAX){h=Math.round(h*MAX/w);w=MAX;} }
-        else { if(h>MAX){w=Math.round(w*MAX/h);h=MAX;} }
-        const canvas = document.createElement('canvas');
-        canvas.width=w; canvas.height=h;
-        canvas.getContext('2d').drawImage(img,0,0,w,h);
-        resolve(canvas.toDataURL('image/jpeg', 0.8));
-      };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
 // ── modal ────────────────────────────────────────────────────────
 window.openModal = function(id=null){
   editId = id;
   const p = id ? lista.find(x=>x._id===id)||{} : {};
-  document.getElementById('modal-title').innerHTML = id ? 'Editar <span>professor</span>' : 'Novo <span>professor</span>';
-  ['nome','email1','email2','tel','linkedin','prof','nivel','empresa','areas','contrato','valor','disp','status','obs'].forEach(k=>{
+  document.getElementById('modal-title').innerHTML = id ? 'Editar <span>instrutor</span>' : 'Novo <span>instrutor</span>';
+  ['nome','email1','email2','tel','linkedin','prof','nivel','empresa','areas','cursosSG','cursosImersao','contrato','valor','disp','status','obs'].forEach(k=>{
     const el=document.getElementById('f-'+k);
     if(el) el.value=p[k]||'';
   });
-  // foto
-  fotoFile = null;
-  fotoUrlAtual = p.fotoUrl || null;
-  document.getElementById('f-foto').value = '';
-  if(fotoUrlAtual){ setPhotoPreview(fotoUrlAtual); }
-  else { clearPhotoPreview(); }
+  const sel=prodList(p);
+  document.querySelectorAll('#f-produtos .chip').forEach(c=>c.classList.toggle('on',sel.includes(c.dataset.val)));
+  syncCursoFields();
   document.getElementById('overlay').classList.add('open');
 };
 window.closeModal = ()=>document.getElementById('overlay').classList.remove('open');
@@ -1004,28 +971,25 @@ window.salvar = async function(){
   const nome=document.getElementById('f-nome').value.trim();
   if(!nome){alert('Nome é obrigatório.');return;}
   const p={};
-  ['nome','email1','email2','tel','linkedin','prof','nivel','empresa','areas','contrato','valor','disp','status','obs'].forEach(k=>{
+  ['nome','email1','email2','tel','linkedin','prof','nivel','empresa','areas','cursosSG','cursosImersao','contrato','valor','disp','status','obs'].forEach(k=>{
     p[k]=(document.getElementById('f-'+k).value||'').trim();
   });
+  const marcados=[...document.querySelectorAll('#f-produtos .chip.on')].map(c=>c.dataset.val);
+  p.produtos=marcados.join(', ');
+  if(!marcados.includes('Skills & Go')) p.cursosSG='';
+  if(!marcados.includes('Imersão')) p.cursosImersao='';
   const btn = document.querySelector('#overlay .btn.primary');
   btn.textContent='Salvando...'; btn.disabled=true;
   try {
-    if(fotoFile){
-      p.fotoUrl = await fotoParaBase64(fotoFile);
-    } else if(fotoUrlAtual !== null){
-      p.fotoUrl = fotoUrlAtual;
-    } else {
-      p.fotoUrl = '';
-    }
     if(editId){ await updateDoc(doc(db,'professores',editId), p); }
     else       { await addDoc(col, p); }
     closeModal();
   } catch(e){ alert('Erro ao salvar: '+e.message); }
-  btn.textContent='Salvar professor'; btn.disabled=false;
+  btn.textContent='Salvar instrutor'; btn.disabled=false;
 };
 
 window.excluir = async function(id){
-  if(!confirm('Remover este professor do banco?')) return;
+  if(!confirm('Remover este instrutor do banco?')) return;
   closeDrawer();
   await deleteDoc(doc(db,'professores',id));
 };
@@ -1040,21 +1004,17 @@ window.openDrawer = function(id){
   const cc=p.contrato==='PJ'?'pj':p.contrato==='RPA'?'rpa':'';
   const areas=(p.areas||'').split(',').filter(Boolean).map(a=>`<span class="badge badge-area" style="font-size:12px">${a.trim()}</span>`).join(' ');
 
-  const avatarHtml = p.fotoUrl
-    ? `<div class="drawer-avatar"><img src="${p.fotoUrl}" alt="${p.nome}"></div>`
-    : `<div class="drawer-avatar" style="background:${bg};color:${fg}">${ini}</div>`;
-
   function row(l,v){ if(!v)return ''; return `<div class="drawer-row"><span class="drawer-label">${l}</span><span class="drawer-value">${v}</span></div>`; }
 
   document.getElementById('drawerContent').innerHTML=`
     <div class="drawer-top"><div></div><button class="close-btn" onclick="closeDrawer()">✕</button></div>
-    ${avatarHtml}
+    <div class="drawer-avatar" style="background:${bg};color:${fg}">${ini}</div>
     <div class="drawer-name">${p.nome||'—'}</div>
     <div class="drawer-prof">${p.prof||''}${p.empresa?` · ${p.empresa}`:''}</div>
     <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
       ${sc?`<span class="badge badge-${sc}">${p.status}</span>`:''}
       ${cc?`<span class="badge badge-${cc}">${p.contrato}</span>`:''}
-      ${p.nivel?`<span class="badge" style="background:rgba(255,255,255,0.06);color:var(--muted);border:1px solid var(--border)">${p.nivel}</span>`:''}
+      ${p.nivel?`<span class="badge" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border)">${p.nivel}</span>`:''}
     </div>
     <div class="drawer-section">Contato</div>
     ${row('E-mail pessoal',p.email1)}
@@ -1062,6 +1022,7 @@ window.openDrawer = function(id){
     ${row('Telefone',p.tel)}
     ${p.linkedin?`<div class="drawer-row"><span class="drawer-label">LinkedIn</span><span class="drawer-value"><a href="https://${p.linkedin.replace('https://','')}" target="_blank">${p.linkedin}</a></span></div>`:''}
     <div class="drawer-section">Atuação</div>
+    ${prodList(p).length?`<div style="padding:8px 0;border-bottom:1px solid var(--border)">${prodBadges(p,'12px')}</div>`:''}
     ${areas?`<div style="padding:8px 0;border-bottom:1px solid var(--border)">${areas}</div>`:''}
     ${row('Disponibilidade',p.disp)}
     ${p.valor?`<div class="drawer-row"><span class="drawer-label">Hora/aula</span><span class="drawer-value">R$ ${Number(p.valor).toLocaleString('pt-BR',{minimumFractionDigits:2})}</span></div>`:''}
@@ -1080,84 +1041,10 @@ window.closeDrawer = ()=>{
 };
 
 document.getElementById('overlay').addEventListener('click',e=>{if(e.target===document.getElementById('overlay'))closeModal();});
+document.getElementById('search').addEventListener('input',render);
 document.getElementById('fStatus').addEventListener('change',render);
+document.getElementById('fProduto').addEventListener('change',render);
 document.getElementById('fContrato').addEventListener('change',render);
-
-// ── normalize: remove acentos e lowercase ────────────────────────
-function norm(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
-
-// ── autocomplete ─────────────────────────────────────────────────
-const searchEl  = document.getElementById('search');
-const acDropdown = document.getElementById('acDropdown');
-const acWrap    = document.getElementById('acWrap');
-let acIndex = -1;
-
-function buildSuggestions(q){
-  const nq = norm(q);
-  const names = [...new Set(lista.map(p=>p.nome).filter(Boolean))].filter(n=> norm(n).includes(nq)).sort();
-  const allAreas = lista.flatMap(p=>(p.areas||'').split(',').map(a=>a.trim()).filter(Boolean));
-  const areas = [...new Set(allAreas)].filter(a=> norm(a).includes(nq)).sort();
-  const profs = [...new Set(lista.map(p=>p.prof).filter(Boolean))].filter(p=> norm(p).includes(nq)).sort();
-  return { names: names.slice(0,5), areas: areas.slice(0,5), profs: profs.slice(0,4) };
-}
-
-function renderDropdown(q){
-  acIndex = -1;
-  if(!q){ acDropdown.classList.remove('open'); return; }
-  const {names,areas,profs} = buildSuggestions(q);
-  const total = names.length + areas.length + profs.length;
-  if(!total){
-    acDropdown.innerHTML = `<div class="autocomplete-empty">Nenhuma sugestão encontrada</div>`;
-    acDropdown.classList.add('open');
-    return;
-  }
-  let html = '';
-  if(names.length){
-    html += `<div class="autocomplete-group-label">👤 Professores</div>`;
-    names.forEach(n => { html += `<div class="autocomplete-item" data-val="${n}">${highlight(n,q)}</div>`; });
-  }
-  if(areas.length){
-    html += `<div class="autocomplete-group-label">🎯 Áreas</div>`;
-    areas.forEach(a => { html += `<div class="autocomplete-item" data-val="${a}">${highlight(a,q)} <span class="item-tag">área</span></div>`; });
-  }
-  if(profs.length){
-    html += `<div class="autocomplete-group-label">💼 Cargo / Profissão</div>`;
-    profs.forEach(p => { html += `<div class="autocomplete-item" data-val="${p}">${highlight(p,q)} <span class="item-tag">cargo</span></div>`; });
-  }
-  acDropdown.innerHTML = html;
-  acDropdown.querySelectorAll('.autocomplete-item').forEach(el=>{
-    el.addEventListener('mousedown', e=>{ e.preventDefault(); selectSuggestion(el.dataset.val); });
-  });
-  acDropdown.classList.add('open');
-}
-
-function highlight(text, q){
-  const nq = norm(q);
-  const nt = norm(text);
-  const i = nt.indexOf(nq);
-  if(i<0) return text;
-  return text.slice(0,i)+'<strong style="color:var(--accent)">'+text.slice(i,i+q.length)+'</strong>'+text.slice(i+q.length);
-}
-
-function selectSuggestion(val){
-  searchEl.value = val;
-  acDropdown.classList.remove('open');
-  render();
-}
-
-searchEl.addEventListener('input', ()=>{ render(); renderDropdown(searchEl.value); });
-searchEl.addEventListener('focus', ()=>{ if(searchEl.value) renderDropdown(searchEl.value); });
-searchEl.addEventListener('blur',  ()=>{ setTimeout(()=>acDropdown.classList.remove('open'), 150); });
-searchEl.addEventListener('keydown', e=>{
-  const items = acDropdown.querySelectorAll('.autocomplete-item');
-  if(!items.length) return;
-  if(e.key==='ArrowDown'){ e.preventDefault(); acIndex=Math.min(acIndex+1,items.length-1); items.forEach((el,i)=>el.classList.toggle('focused',i===acIndex)); }
-  else if(e.key==='ArrowUp'){ e.preventDefault(); acIndex=Math.max(acIndex-1,0); items.forEach((el,i)=>el.classList.toggle('focused',i===acIndex)); }
-  else if(e.key==='Enter' && acIndex>=0){ selectSuggestion(items[acIndex].dataset.val); }
-  else if(e.key==='Escape'){ acDropdown.classList.remove('open'); }
-});
-// fecha dropdown ao clicar fora
-document.addEventListener('click', e=>{ if(!acWrap.contains(e.target)) acDropdown.classList.remove('open'); });
 </script>
 </body>
 </html>
