@@ -622,6 +622,29 @@
   html[data-theme="dark"] .chip.on[data-val="Imersão"] { background: rgba(255,255,255,0.12); color: #f2f4f7; border-color: rgba(255,255,255,0.35); }
   html[data-theme="dark"] .btn.danger { color: #f26d63; border-color: rgba(242,109,99,0.35); }
   html[data-theme="dark"] .btn.danger:hover { background: rgba(242,109,99,0.08); }
+
+  /* ===== TABELA: cabe na tela sem rolar para o lado ===== */
+  main { max-width: 1400px; padding-left: 1.25rem; padding-right: 1.25rem; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; }
+  th { padding: 12px 10px; font-size: 10.5px; letter-spacing: 0.5px; }
+  td { padding: 12px 10px; }
+  .name-sub { overflow-wrap: anywhere; }
+  th:first-child, td:first-child { min-width: 215px; }
+  td:nth-child(4) { min-width: 100px; }
+  td .badge-area { white-space: normal; }
+  .actions { justify-content: flex-end; gap: 4px; }
+  .actions .btn.sm { padding: 6px 10px; }
+  /* só em janela muito estreita: rola de lado, mas Editar/✕ ficam fixos */
+  @media (max-width: 900px) {
+    table { min-width: 860px; }
+    th:last-child, td:last-child {
+      position: sticky; right: 0; background: var(--surface);
+      box-shadow: -10px 0 10px -10px rgba(16,24,40,0.25);
+    }
+    tbody tr:hover td:last-child { background: var(--surface2); }
+  }
+  html[data-theme="dark"] input[type="date"] { color-scheme: dark; }
 </style>
 <script>
 (function(){
@@ -744,15 +767,12 @@
     <div class="form-section">Perfil profissional</div>
     <div class="form-grid">
       <div class="form-row span2"><label>Profissão / Cargo atual</label><input id="f-prof" type="text" placeholder="Ex: Engenheiro de ML Sênior"></div>
-      <div class="form-row"><label>Nível acadêmico</label>
+      <div class="form-row"><label>Nível</label>
         <select id="f-nivel">
           <option value="">Selecione</option>
-          <option>Graduação</option>
-          <option>Especialização</option>
-          <option>MBA</option>
-          <option>Mestrado</option>
-          <option>Doutorado</option>
-          <option>Pós-doutorado</option>
+          <option>N1: Nome de peso</option>
+          <option>N2: Referência</option>
+          <option>N3: Especialista</option>
         </select>
       </div>
       <div class="form-row"><label>Empresa / Instituição</label><input id="f-empresa" type="text" placeholder="Ex: Google, Nubank..."></div>
@@ -768,8 +788,17 @@
           <option>RPA</option>
         </select>
       </div>
-      <div class="form-row"><label>Valor hora/aula (R$)</label><input id="f-valor" type="number" placeholder="0"></div>
-      <div class="form-row"><label>Disponibilidade</label>
+      <div class="form-row"><label>Status</label>
+        <select id="f-status">
+          <option value="">Selecione</option>
+          <option>Ativo</option>
+          <option>Inativo</option>
+          <option>Prospecto</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Vigência do contrato: início</label><input id="f-vigIni" type="date"></div>
+      <div class="form-row"><label>Vigência do contrato: fim</label><input id="f-vigFim" type="date"></div>
+      <div class="form-row span2"><label>Disponibilidade</label>
         <select id="f-disp">
           <option value="">Selecione</option>
           <option>Manhã</option>
@@ -777,14 +806,6 @@
           <option>Noite</option>
           <option>Fins de semana</option>
           <option>Flexível</option>
-        </select>
-      </div>
-      <div class="form-row"><label>Status</label>
-        <select id="f-status">
-          <option value="">Selecione</option>
-          <option>Ativo</option>
-          <option>Inativo</option>
-          <option>Prospecto</option>
         </select>
       </div>
     </div>
@@ -956,9 +977,15 @@ window.openModal = function(id=null){
   editId = id;
   const p = id ? lista.find(x=>x._id===id)||{} : {};
   document.getElementById('modal-title').innerHTML = id ? 'Editar <span>instrutor</span>' : 'Novo <span>instrutor</span>';
-  ['nome','email1','email2','tel','linkedin','prof','nivel','empresa','areas','cursosSG','cursosImersao','contrato','valor','disp','status','obs'].forEach(k=>{
+  ['nome','email1','email2','tel','linkedin','prof','nivel','empresa','areas','cursosSG','cursosImersao','contrato','vigIni','vigFim','disp','status','obs'].forEach(k=>{
     const el=document.getElementById('f-'+k);
-    if(el) el.value=p[k]||'';
+    if(el){
+      if(k==='nivel' && p[k] && ![...el.options].some(o=>o.value===p[k])){
+        // nível antigo (ex.: Especialização): mantém visível até escolher N1/N2/N3
+        const o=document.createElement('option'); o.value=o.textContent=p[k]; o.dataset.legacy='1'; el.appendChild(o);
+      } else if(k==='nivel'){ [...el.querySelectorAll('option[data-legacy]')].forEach(o=>o.remove()); }
+      el.value=p[k]||'';
+    }
   });
   const sel=prodList(p);
   document.querySelectorAll('#f-produtos .chip').forEach(c=>c.classList.toggle('on',sel.includes(c.dataset.val)));
@@ -971,7 +998,7 @@ window.salvar = async function(){
   const nome=document.getElementById('f-nome').value.trim();
   if(!nome){alert('Nome é obrigatório.');return;}
   const p={};
-  ['nome','email1','email2','tel','linkedin','prof','nivel','empresa','areas','cursosSG','cursosImersao','contrato','valor','disp','status','obs'].forEach(k=>{
+  ['nome','email1','email2','tel','linkedin','prof','nivel','empresa','areas','cursosSG','cursosImersao','contrato','vigIni','vigFim','disp','status','obs'].forEach(k=>{
     p[k]=(document.getElementById('f-'+k).value||'').trim();
   });
   const marcados=[...document.querySelectorAll('#f-produtos .chip.on')].map(c=>c.dataset.val);
@@ -1004,6 +1031,14 @@ window.openDrawer = function(id){
   const cc=p.contrato==='PJ'?'pj':p.contrato==='RPA'?'rpa':'';
   const areas=(p.areas||'').split(',').filter(Boolean).map(a=>`<span class="badge badge-area" style="font-size:12px">${a.trim()}</span>`).join(' ');
 
+  function fmtData(d){ if(!d) return ''; const [y,m,dd]=d.split('-'); return (y&&m&&dd)?`${dd}/${m}/${y}`:d; }
+  function vigencia(p){
+    const a=fmtData(p.vigIni), b=fmtData(p.vigFim);
+    if(a&&b) return `${a} a ${b}`;
+    if(a) return `a partir de ${a}`;
+    if(b) return `até ${b}`;
+    return '';
+  }
   function row(l,v){ if(!v)return ''; return `<div class="drawer-row"><span class="drawer-label">${l}</span><span class="drawer-value">${v}</span></div>`; }
 
   document.getElementById('drawerContent').innerHTML=`
@@ -1025,7 +1060,9 @@ window.openDrawer = function(id){
     ${prodList(p).length?`<div style="padding:8px 0;border-bottom:1px solid var(--border)">${prodBadges(p,'12px')}</div>`:''}
     ${areas?`<div style="padding:8px 0;border-bottom:1px solid var(--border)">${areas}</div>`:''}
     ${row('Disponibilidade',p.disp)}
-    ${p.valor?`<div class="drawer-row"><span class="drawer-label">Hora/aula</span><span class="drawer-value">R$ ${Number(p.valor).toLocaleString('pt-BR',{minimumFractionDigits:2})}</span></div>`:''}
+    ${(p.contrato||vigencia(p))?`<div class="drawer-section">Contrato</div>`:''}
+    ${row('Tipo',p.contrato)}
+    ${row('Vigência',vigencia(p))}
     ${p.obs?`<div class="drawer-section">Observações</div><div class="drawer-obs">${p.obs}</div>`:''}
     <div class="drawer-actions">
       <button class="btn" style="flex:1" onclick="closeDrawer();openModal('${id}')">Editar</button>
