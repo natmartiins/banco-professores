@@ -718,7 +718,7 @@
         <tr>
           <th onclick="sortBy('nome')">Professor <span class="sort-arrow" id="s-nome"></span></th>
           <th onclick="sortBy('produtos')">Produto <span class="sort-arrow" id="s-produtos"></span></th>
-          <th onclick="sortBy('areas')">Áreas</th>
+          <th onclick="sortBy('cursos')">Curso <span class="sort-arrow" id="s-cursos"></span></th>
           <th onclick="sortBy('nivel')">Nível</th>
           <th onclick="sortBy('contrato')">Contrato</th>
           <th onclick="sortBy('disp')">Disponibilidade</th>
@@ -770,9 +770,9 @@
       <div class="form-row"><label>Nível</label>
         <select id="f-nivel">
           <option value="">Selecione</option>
-          <option>N1: Nome de peso</option>
-          <option>N2: Referência</option>
-          <option>N3: Especialista</option>
+          <option value="N1">N1</option>
+          <option value="N2">N2</option>
+          <option value="N3">N3</option>
         </select>
       </div>
       <div class="form-row"><label>Empresa / Instituição</label><input id="f-empresa" type="text" placeholder="Ex: Google, Nubank..."></div>
@@ -862,8 +862,10 @@ const prodList = p => (p.produtos||'').split(',').map(x=>x.trim()).filter(Boolea
 const prodClass = v => v==='Skills & Go'?'sg':'imersao';
 const cursoKey = v => v==='Skills & Go'?'cursosSG':'cursosImersao';
 const cursosOf = (p,v) => (p[cursoKey(v)]||'').split(',').map(x=>x.trim()).filter(Boolean);
-const prodBadges = (p,size='') => prodList(p).map(v=>{
-  const c=cursosOf(p,v).join(' · ');
+const nivelShort = v => { const m=(v||'').match(/^N[123]/); return m?m[0]:(v||''); };
+const cursosAll = p => [...new Set([...cursosOf(p,'Skills & Go'),...cursosOf(p,'Imersão')])];
+const prodBadges = (p,size='',comCursos=false) => prodList(p).map(v=>{
+  const c=comCursos?cursosOf(p,v).join(' · '):'';
   return `<div class="prod-line"><span class="badge badge-${prodClass(v)}"${size?` style="font-size:${size}"`:''}>${v}</span>${c?`<span class="cursos">${c}</span>`:''}</div>`;
 }).join('');
 window.toggleProd = function(el){ el.classList.toggle('on'); syncCursoFields(); };
@@ -908,8 +910,8 @@ function filtered(){
     const okP=!fp||(fp==='__none'?pl.length===0:pl.includes(fp));
     return m&&okP&&(!fs||p.status===fs)&&(!fc||p.contrato===fc);
   }).sort((a,b)=>{
-    const av=(a[sortCol]||'').toLowerCase();
-    const bv=(b[sortCol]||'').toLowerCase();
+    const sv=(p)=>(sortCol==='cursos'?cursosAll(p).join(', '):sortCol==='nivel'?nivelShort(p.nivel):(p[sortCol]||'')).toLowerCase();
+    const av=sv(a), bv=sv(b);
     return sortAsc?(av>bv?1:-1):(av<bv?1:-1);
   });
 }
@@ -923,7 +925,7 @@ function render(){
   if(page>pages)page=1;
   const slice=list.slice((page-1)*PER_PAGE,page*PER_PAGE);
 
-  ['nome','produtos','areas','nivel','contrato','disp','status'].forEach(k=>{
+  ['nome','produtos','cursos','nivel','contrato','disp','status'].forEach(k=>{
     const el=document.getElementById('s-'+k);
     if(el)el.textContent=sortCol===k?(sortAsc?'↑':'↓'):'';
   });
@@ -937,16 +939,17 @@ function render(){
       const [bg,fg]=colorFor(p.nome||'?');
       const ini=initials(p.nome||'?');
       const sc=(p.status||'').toLowerCase();
-      const areas=(p.areas||'').split(',').filter(Boolean).slice(0,2).map(a=>`<span class="badge badge-area">${a.trim()}</span>`).join(' ');
+      const cl=cursosAll(p);
+      const cursosHtml=cl.length?`<span style="font-size:12px;color:var(--muted)">${cl.join(', ')}</span>`:'';
       const cc=p.contrato==='PJ'?'pj':p.contrato==='RPA'?'rpa':'';
       return `<tr onclick="openDrawer('${id}')">
         <td><div class="cell-name">
           <div class="avatar" style="background:${bg};color:${fg}">${ini}</div>
           <div><div class="name-main">${p.nome||'—'}</div><div class="name-sub">${p.email1||p.email2||''}</div></div>
         </div></td>
-        <td>${prodBadges(p)||'<span style="color:var(--muted2)">—</span>'}</td>
-        <td>${areas||'<span style="color:var(--muted2)">—</span>'}</td>
-        <td><span style="font-size:12px;color:var(--muted)">${p.nivel||'—'}</span></td>
+        <td>${prodBadges(p,'',false)||'<span style="color:var(--muted2)">—</span>'}</td>
+        <td>${cursosHtml||'<span style="color:var(--muted2)">—</span>'}</td>
+        <td><span style="font-size:12px;color:var(--muted)">${nivelShort(p.nivel)||'—'}</span></td>
         <td>${cc?`<span class="badge badge-${cc}">${p.contrato}</span>`:'<span style="color:var(--muted2)">—</span>'}</td>
         <td><span style="font-size:12px;color:var(--muted)">${p.disp||'—'}</span></td>
         <td>${sc?`<span class="badge badge-${sc}">${p.status}</span>`:'—'}</td>
@@ -980,11 +983,12 @@ window.openModal = function(id=null){
   ['nome','email1','email2','tel','linkedin','prof','nivel','empresa','areas','cursosSG','cursosImersao','contrato','vigIni','vigFim','disp','status','obs'].forEach(k=>{
     const el=document.getElementById('f-'+k);
     if(el){
-      if(k==='nivel' && p[k] && ![...el.options].some(o=>o.value===p[k])){
+      const v = k==='nivel' ? nivelShort(p[k]) : p[k];
+      if(k==='nivel' && v && ![...el.options].some(o=>o.value===v)){
         // nível antigo (ex.: Especialização): mantém visível até escolher N1/N2/N3
-        const o=document.createElement('option'); o.value=o.textContent=p[k]; o.dataset.legacy='1'; el.appendChild(o);
+        const o=document.createElement('option'); o.value=o.textContent=v; o.dataset.legacy='1'; el.appendChild(o);
       } else if(k==='nivel'){ [...el.querySelectorAll('option[data-legacy]')].forEach(o=>o.remove()); }
-      el.value=p[k]||'';
+      el.value=v||'';
     }
   });
   const sel=prodList(p);
@@ -1049,7 +1053,7 @@ window.openDrawer = function(id){
     <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
       ${sc?`<span class="badge badge-${sc}">${p.status}</span>`:''}
       ${cc?`<span class="badge badge-${cc}">${p.contrato}</span>`:''}
-      ${p.nivel?`<span class="badge" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border)">${p.nivel}</span>`:''}
+      ${p.nivel?`<span class="badge" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border)">${nivelShort(p.nivel)}</span>`:''}
     </div>
     <div class="drawer-section">Contato</div>
     ${row('E-mail pessoal',p.email1)}
@@ -1057,7 +1061,7 @@ window.openDrawer = function(id){
     ${row('Telefone',p.tel)}
     ${p.linkedin?`<div class="drawer-row"><span class="drawer-label">LinkedIn</span><span class="drawer-value"><a href="https://${p.linkedin.replace('https://','')}" target="_blank">${p.linkedin}</a></span></div>`:''}
     <div class="drawer-section">Atuação</div>
-    ${prodList(p).length?`<div style="padding:8px 0;border-bottom:1px solid var(--border)">${prodBadges(p,'12px')}</div>`:''}
+    ${prodList(p).length?`<div style="padding:8px 0;border-bottom:1px solid var(--border)">${prodBadges(p,'12px',true)}</div>`:''}
     ${areas?`<div style="padding:8px 0;border-bottom:1px solid var(--border)">${areas}</div>`:''}
     ${row('Disponibilidade',p.disp)}
     ${(p.contrato||vigencia(p))?`<div class="drawer-section">Contrato</div>`:''}
@@ -1077,7 +1081,6 @@ window.closeDrawer = ()=>{
   document.getElementById('drawer').classList.remove('open');
 };
 
-document.getElementById('overlay').addEventListener('click',e=>{if(e.target===document.getElementById('overlay'))closeModal();});
 document.getElementById('search').addEventListener('input',render);
 document.getElementById('fStatus').addEventListener('change',render);
 document.getElementById('fProduto').addEventListener('change',render);
