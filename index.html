@@ -645,6 +645,25 @@
     tbody tr:hover td:last-child { background: var(--surface2); }
   }
   html[data-theme="dark"] input[type="date"] { color-scheme: dark; }
+
+  /* ── sino de vencimento de contrato ── */
+  .bell-wrap { position: relative; }
+  .bell-btn { position: relative; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all .15s; }
+  .bell-btn:hover { color: var(--text); border-color: var(--border-hover); }
+  .bell-btn.has-alert { color: var(--accent); }
+  .bell-badge { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #ef4444; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .bell-badge[hidden] { display: none; }
+  .bell-panel { display: none; position: absolute; right: 0; top: 46px; width: 340px; max-width: calc(100vw - 24px); max-height: 420px; overflow-y: auto; background: var(--surface); border: 1px solid var(--border-hover); border-radius: var(--radius); box-shadow: 0 12px 32px rgba(16,24,40,0.18); z-index: 1000; }
+  .bell-panel.open { display: block; }
+  .bell-title { padding: 12px 14px; font-size: 13px; font-weight: 700; color: var(--text); border-bottom: 1px solid var(--border); }
+  .bell-empty { padding: 18px 14px; font-size: 13px; color: var(--muted); }
+  .bell-item { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--border); }
+  .bell-item:last-child { border-bottom: none; }
+  .bell-item:hover { background: var(--surface2); }
+  .bell-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .bell-when { font-size: 12px; color: var(--prospecto); }
+  .bell-when.late { color: #ef4444; }
+  .bell-date { font-size: 11px; color: var(--muted2); }
 </style>
 <script>
 (function(){
@@ -668,6 +687,13 @@
   </div>
   <div class="header-right">
     <div class="header-tag">Banco de Instrutores</div>
+    <div class="bell-wrap">
+      <button type="button" class="bell-btn" id="bellBtn" aria-label="Contratos próximos do vencimento" title="Contratos próximos do vencimento">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="bell-badge" id="bellBadge" hidden>0</span>
+      </button>
+      <div class="bell-panel" id="bellPanel"></div>
+    </div>
     <div class="theme-switch" role="group" aria-label="Tema">
       <button type="button" data-t="light" onclick="setTheme('light')">☀ Dia</button>
       <button type="button" data-t="dark" onclick="setTheme('dark')">☾ Noite</button>
@@ -883,7 +909,43 @@ onSnapshot(col, snap => {
   lista = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
   if(loadEl) loadEl.style.display = 'none';
   render();
+  renderAlerts();
 });
+
+// ── sino: contratos perto do fim da vigência ─────────────────────
+const DIAS_ALERTA = 15; // avisa quando faltarem até X dias (ou já vencido)
+const escHtml = t => String(t||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function renderAlerts(){
+  const hoje=new Date(); hoje.setHours(0,0,0,0);
+  const itens=lista.filter(p=>p.vigFim && p.status!=='Inativo').map(p=>{
+    const [y,m,d]=p.vigFim.split('-').map(Number);
+    if(!y||!m||!d) return null;
+    const dias=Math.round((new Date(y,m-1,d)-hoje)/86400000);
+    return {p,dias,data:`${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}/${y}`};
+  }).filter(x=>x && x.dias<=DIAS_ALERTA).sort((a,b)=>a.dias-b.dias);
+
+  const badge=document.getElementById('bellBadge');
+  badge.textContent=itens.length; badge.hidden=!itens.length;
+  document.getElementById('bellBtn').classList.toggle('has-alert',itens.length>0);
+
+  const quando=d=> d<0?`Venceu há ${-d} dia${d===-1?'':'s'}` : d===0?'Vence hoje' : d===1?'Vence amanhã' : `Vence em ${d} dias`;
+  document.getElementById('bellPanel').innerHTML =
+    `<div class="bell-title">Contratos a vencer (até ${DIAS_ALERTA} dias)</div>` +
+    (itens.length ? itens.map(x=>`<div class="bell-item" data-id="${x.p._id}">
+        <span class="bell-name">${escHtml(x.p.nome)}</span>
+        <span class="bell-when ${x.dias<0?'late':''}">${quando(x.dias)}</span>
+        <span class="bell-date">Fim da vigência: ${x.data}</span></div>`).join('')
+      : `<div class="bell-empty">Nenhum contrato perto do vencimento 🎉</div>`);
+}
+document.getElementById('bellBtn').addEventListener('click',e=>{e.stopPropagation();document.getElementById('bellPanel').classList.toggle('open');});
+document.getElementById('bellPanel').addEventListener('click',e=>{
+  const it=e.target.closest('.bell-item'); if(!it) return;
+  document.getElementById('bellPanel').classList.remove('open');
+  window.openDrawer(it.dataset.id);
+});
+document.addEventListener('click',e=>{ if(!e.target.closest('.bell-wrap')) document.getElementById('bellPanel').classList.remove('open'); });
+setInterval(renderAlerts, 60*60*1000); // reavalia a cada hora (caso a aba fique aberta de um dia pro outro)
+
 
 // ── stats ────────────────────────────────────────────────────────
 function renderStats(){
